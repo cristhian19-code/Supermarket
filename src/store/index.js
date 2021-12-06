@@ -8,12 +8,20 @@ export default createStore({
     pushProduct(state,product){
       state.cart.push(product);
       console.log(state.cart);
+    },
+    cleanCart(state) {
+      state.cart = []
     }
   },
   actions: {
-    addShoppingCart({commit,state},product){
-      console.log(state.cart.find(prod => prod.id == product.id));
-      commit('pushProduct',product)
+    addShoppingCart({ commit, state }, product) {
+      const repeatProd = state.cart.find(prod => prod.id == product.id)
+      if (!repeatProd) {
+        commit('pushProduct',product)
+      }
+    },
+    cleanShoppingCart({ commit }) {
+      commit('cleanCart')
     }
   },
   getters: {

@@ -1,5 +1,6 @@
 <template>
     <div class="container__product">
+        <NotificationVue :status="true" title="Exitoso!" message="agregado al carrito"/>
         <vueper-slides fade :touchable="true" fixed-height="600px">
             <vueper-slide
                 v-for="(image, i) in product.photos"
@@ -14,24 +15,27 @@
             <h1 class="text-red">S/{{product.price_discount}}</h1>
             <h2 class="text-muted" v-if="product.price_discount != product.price"><del>S/{{product.price}}</del></h2>
 
-            <button @click="addShoppingCart(prod_cart)" class="btn__buy">
+            <button @click="()=>{
+                showNotification()
+                addShoppingCart(prod_cart)
+            }" class="btn__buy">
                 <i class="fas fa-cart-plus"></i> Agregar al carrito
             </button>
         </div>
-    </div>
-
-    <div class="recommendations">
-
+        <div class="recommendations">
+        </div>
     </div>
 </template>
 
 <script>
 import { VueperSlides, VueperSlide } from 'vueperslides'
+import { mapActions } from 'vuex';
 import 'vueperslides/dist/vueperslides.css'
 
-import { mapActions } from 'vuex';
-import {productCart} from '../helpers/functions'
 import { findProductbyID } from '../helpers/functions';
+import {productCart} from '../helpers/functions'
+
+import NotificationVue from '../components/Notification.vue';
 
 export default {
     data() {
@@ -42,10 +46,18 @@ export default {
     },
     components: { 
         VueperSlides, 
-        VueperSlide 
+        VueperSlide,
+        NotificationVue
     },
     methods: {
-        ...mapActions(['addShoppingCart'])
+        ...mapActions(['addShoppingCart']),
+        showNotification(){
+            document.querySelector('.notification').classList.add('animation')
+            
+            setTimeout(() => {
+                document.querySelector('.notification').classList.remove('animation')
+            }, 4000);
+        }
     },
     async created() {
         const id = this.$route.params.id;
@@ -65,7 +77,7 @@ export default {
 }
 
 .container__product{
-    padding: 30px 20px;
+    padding: 0px 20px;
     display: grid;
     grid-template-columns: repeat(2,1fr);
 }

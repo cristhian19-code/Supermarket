@@ -1,7 +1,8 @@
 <template>
   <div class="shopping__cart">
     <p>Carrito</p>
-    <table>
+    <div class="container_table">
+        <table>
         <thead>
             <tr>
                 <th></th>
@@ -26,36 +27,62 @@
             <td>S/{{getTotal}}</td>
         </tr>
     </table>
-    <button class="btn__shopping">
+    </div>
+    <button @click="()=>{
+        showNotification();
+        cleanShoppingCart();
+    }" class="btn__shopping">
        <i class="fas fa-shopping-bag"></i> Comprar
     </button>
+
+    <NotificationVue :status="true" title="Exito!" message="Compra exitosa"/>
+    
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import CartItemVue from '../components/CartItem.vue'
+import NotificationVue from '../components/Notification.vue'
 
 export default {
     computed: {
         ...mapState(['cart']),
         ...mapGetters(['getTotal'])
     },
+    methods: {
+        showNotification(){
+            document.querySelector('.notification').classList.add('animation')
+            
+            setTimeout(() => {
+                document.querySelector('.notification').classList.remove('animation')
+            }, 4000);
+        },
+        ...mapActions(['cleanShoppingCart'])
+    },
     components: {
-        CartItemVue
+        CartItemVue,
+        NotificationVue
     }
 }
 </script>
 
 <style>
 .shopping__cart{
-    text-align: center;
-    padding: 90px 10px 0px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 10px 0px 10px;
 }
 
 .shopping__cart>p{
     font-size: 60px;
     margin: 20px 0;
+    text-align: center;
+}
+.container_table{
+    width: 100%;
+    overflow-x: auto;
 }
 
 table{
